@@ -1,5 +1,8 @@
-// ! launch web server
-const liveServer = require("live-server");
+import liveServer from "live-server";
+import fs from "fs";
+import path from "path";
+import sass from "sass";
+import chalk from "chalk";
 
 const params = {
   port: 8080,
@@ -14,46 +17,55 @@ const params = {
   open: false,
 };
 
-liveServer.start(params);
+const folder = `./public/scss`;
 
-// ! compile sass
-const fs = require("fs");
-const path = require("path");
-const sass = require("sass");
+const main = async () => {
+  liveServer.start(params);
 
-const folder = `${__dirname}/public/scss`;
+  fs.watch(folder, (event, filename) => {
+    compileStyle(folder, filename);
+  });
 
-fs.watch(folder, (event, filename) => {
-  compile(folder, filename);
-});
+  fs.readdirSync(folder).forEach((filename) => {
+    compileStyle(folder, filename);
+  });
+};
 
-fs.readdirSync(folder).forEach((filename) => {
-  compile(folder, filename);
-});
+main();
 
-function compile(folder, filename) {
+const compileStyle = (folder, filename) => {
   if (filename && filename.endsWith(".scss") && !filename.startsWith("_")) {
-    console.log(`compiling ${filename}`);
+    try {
+      const result = sass.compile(path.join(folder, filename), {
+        style: "compressed",
+        sourceMap: true,
+      });
 
-    const result = sass.compile(path.join(folder, filename), {
-      style: "compressed",
-      sourceMap: true,
-    });
+      fs.writeFileSync(
+        path.join(
+          folder.replace("scss", "css"),
+          filename.replace(".scss", ".css")
+        ),
+        result.css
+      );
 
-    fs.writeFileSync(
-      path.join(
-        folder.replace("scss", "css"),
-        filename.replace(".scss", ".css")
-      ),
-      result.css
-    );
+      fs.writeFileSync(
+        path.join(
+          folder.replace("scss", "css"),
+          filename.replace(".scss", ".map.css")
+        ),
+        JSON.stringify(result.sourceMap)
+      );
 
-    fs.writeFileSync(
-      path.join(
-        folder.replace("scss", "css"),
-        filename.replace(".scss", ".map.css")
-      ),
-      JSON.stringify(result.sourceMap)
-    );
+      console.log(`Compiled ${path.join(folder, filename)}`);
+    } catch (e) {
+      console.error(
+        chalk.red(
+          `Error while compiling ${path.join(folder, filename)}\n${
+            String(e).split("public")[0]
+          }`
+        )
+      );
+    }
   }
-}
+};
