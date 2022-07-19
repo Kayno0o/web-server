@@ -4,23 +4,22 @@ import path from "path";
 import sass from "sass";
 import chalk from "chalk";
 
-const params = {
-  port: 8080,
-  root: "public",
-  ignore: "scss",
-  logLevel: 2,
-  middleware: [
-    function (_req, _res, next) {
-      next();
-    },
-  ],
-  open: false,
-};
-
 const folder = `./public/scss`;
+let lastUpdate = 0;
 
 const main = async () => {
-  liveServer.start(params);
+  liveServer.start({
+    port: 8080,
+    root: "public",
+    ignore: "scss",
+    logLevel: 2,
+    middleware: [
+      function (_req, _res, next) {
+        next();
+      },
+    ],
+    open: false,
+  });
 
   fs.watch(folder, (event, filename) => {
     compileStyle(folder, filename);
@@ -34,6 +33,9 @@ const main = async () => {
 main();
 
 function compileStyle(folder, filename) {
+  if (lastUpdate > Date.now() - 100) return;
+  lastUpdate = Date.now();
+
   if (filename && filename.endsWith(".scss") && !filename.startsWith("_")) {
     try {
       const result = sass.compile(path.join(folder, filename), {
