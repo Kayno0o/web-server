@@ -33,7 +33,7 @@ const main = async () => {
 
 main();
 
-const compileStyle = (folder, filename) => {
+function compileStyle(folder, filename) {
   if (filename && filename.endsWith(".scss") && !filename.startsWith("_")) {
     try {
       const result = sass.compile(path.join(folder, filename), {
@@ -68,4 +68,4 @@ const compileStyle = (folder, filename) => {
       );
     }
   }
-};
+}
