@@ -22,11 +22,11 @@ const main = async () => {
   });
 
   fs.watch(folder, (event, filename) => {
-    compileStyle(folder, filename);
+    compileStyle(folder, "main.scss");
   });
 
   fs.readdirSync(folder).forEach((filename) => {
-    compileStyle(folder, filename);
+    compileStyle(folder, "main.scss");
   });
 };
 
