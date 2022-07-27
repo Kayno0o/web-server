@@ -65,10 +65,9 @@ function compileScss() {
       console.log(`Compiled ${filename}`);
     } catch (e) {
       console.error(
-        `${colors.FGRED}Error while compiling ${filename}\n${
-          String(e).split("public")[0]
-        }`
+        `\n${colors.FGRED}Error while compiling ${colors.BRIGHT}${filename}${colors.RESET}`
       );
+      console.error(String(e));
     }
   }
 }
