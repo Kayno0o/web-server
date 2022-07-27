@@ -2,7 +2,7 @@ import liveServer from "live-server";
 import fs from "fs";
 import path from "path";
 import sass from "sass";
-import chalk from "chalk";
+import colors from "./colors.js";
 
 let waitUpdate;
 
@@ -67,9 +67,9 @@ function compileScss() {
       console.log(`Compiled ${filename}`);
     } catch (e) {
       console.error(
-        chalk.red(
-          `Error while compiling ${filename}\n${String(e).split("public")[0]}`
-        )
+        `${colors.FGRED}Error while compiling ${filename}\n${
+          String(e).split("public")[0]
+        }`
       );
     }
   }
