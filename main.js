@@ -9,7 +9,7 @@ let waitUpdate;
 // Main scss files
 const scssFiles = [];
 
-const main = async () => {
+(async () => {
   liveServer.start({
     port: 8080,
     root: "public",
@@ -24,9 +24,7 @@ const main = async () => {
   });
 
   watchScss("./public/assets/scss");
-};
-
-main();
+})();
 
 function watchScss(folder) {
   fs.readdirSync(folder).forEach((filename) => {
