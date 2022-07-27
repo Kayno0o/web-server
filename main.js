@@ -23,15 +23,15 @@ const main = async () => {
     open: false,
   });
 
-  watch("./public/scss");
+  watchScss("./public/assets/scss");
 };
 
 main();
 
-function watch(folder) {
+function watchScss(folder) {
   fs.readdirSync(folder).forEach((filename) => {
     if (fs.statSync(path.join(folder, filename)).isDirectory()) {
-      watch(path.join(folder, filename));
+      watchScss(path.join(folder, filename));
     } else {
       if (filename.endsWith(".scss") && !filename.startsWith("_")) {
         mainFiles.push(path.join(folder, filename));
