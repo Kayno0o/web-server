@@ -24,6 +24,8 @@ const scssFiles = [];
   });
 
   watchScss("./public/assets/scss");
+
+  compileScss();
 })();
 
 function watchScss(folder) {
@@ -34,8 +36,6 @@ function watchScss(folder) {
       if (filename.match(/^(?!_).*\.scss$/)) {
         scssFiles.push(path.join(folder, filename));
       }
-
-      compileScss();
     }
   });
 
