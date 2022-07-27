@@ -33,7 +33,7 @@ function watchScss(folder) {
     if (fs.statSync(path.join(folder, filename)).isDirectory()) {
       watchScss(path.join(folder, filename));
     } else {
-      if (filename.endsWith(".scss") && !filename.startsWith("_")) {
+      if (filename.match(/^(?!_).*\.scss$/)) {
         scssFiles.push(path.join(folder, filename));
       }
 
