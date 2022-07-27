@@ -4,10 +4,10 @@ import path from "path";
 import sass from "sass";
 import chalk from "chalk";
 
-const folder = `./public/scss`;
-let lastUpdate = 0;
+let waitUpdate;
 
-const mainFiles = [];
+// Main scss files
+const scssFiles = [];
 
 const main = async () => {
   liveServer.start({
@@ -34,27 +34,23 @@ function watchScss(folder) {
       watchScss(path.join(folder, filename));
     } else {
       if (filename.endsWith(".scss") && !filename.startsWith("_")) {
-        mainFiles.push(path.join(folder, filename));
+        scssFiles.push(path.join(folder, filename));
       }
 
-      compileStyle(folder);
+      compileScss();
     }
   });
 
-  fs.watch(folder, (_event, filename) => {
-    if (filename.endsWith(".scss") && !filename.startsWith("_")) {
-      mainFiles.push(path.join(folder, filename));
-    }
-
-    compileStyle(folder);
+  fs.watch(folder, () => {
+    compileScss();
   });
 }
 
-function compileStyle(folder) {
-  if (lastUpdate > Date.now() - 100) return;
-  lastUpdate = Date.now();
+function compileScss() {
+  if (waitUpdate) return;
+  waitUpdate = setTimeout(() => (waitUpdate = null), 500);
 
-  for (const filename of mainFiles) {
+  for (const filename of scssFiles) {
     try {
       const result = sass.compile(filename, {
         style: "compressed",
